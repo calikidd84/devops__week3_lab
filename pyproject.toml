@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devops_week3_lab"
+version = "0.1.0"
+description = "DevOps lab project"
+authors = [{name = "Nehemiah Clark"}]
+dependencies = []
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

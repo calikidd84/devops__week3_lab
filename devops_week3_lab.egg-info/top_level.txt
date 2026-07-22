@@ -1,0 +1,5 @@
+docs
+scripts
+src
+tests
+venv
