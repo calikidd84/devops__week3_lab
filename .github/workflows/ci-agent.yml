@@ -46,15 +46,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - run: pip install anthropic PyGithub
+      - run: pip install openai PyGithub pytest
 
       - name: Run build-fixer agent
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          ANTHROPIC_BASE_URL: https://openrouter.ai/api
-          ANTHROPIC_AUTH_TOKEN: ${{ secrets.OPENROUTER_API_KEY }}
-          ANTHROPIC_API_KEY: ""
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           REPO: ${{ github.repository }}
           BASE_BRANCH: ${{ github.ref_name }}
+          MODEL: google/gemini-2.0-flash-exp:free
         run: python scripts/build_fixer_agent.py
