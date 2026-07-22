@@ -30,7 +30,7 @@ def propose_fix(build_log, source_code):
     )
 
     response = client.chat.completions.create(
-        model=os.environ.get("MODEL", "google/gemini-2.0-flash-exp:free"),
+        model=os.environ.get("LLM_MODEL", "google/gemini-2.5-flash"),
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {
