@@ -2,7 +2,7 @@ import json
 import os
 import re
 
-from github import Github
+from github import Github, Auth 
 from openai import OpenAI
 
 
@@ -30,7 +30,7 @@ def propose_fix(build_log, source_code):
     )
 
     response = client.chat.completions.create(
-        model=os.environ.get("LLM_MODEL", "openrouter/free"),
+        model=os.environ.get("MODEL", "google/gemini-2.0-flash-exp:free"),
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {
@@ -62,7 +62,9 @@ def propose_fix(build_log, source_code):
 
 
 def open_pr(fix):
-    gh = Github(os.environ["GH_TOKEN"])
+    token = os.environ.get("GH_TOKEN_PSW") or os.environ["GH_TOKEN"]
+    auth = Auth.Token(token.strip())
+    gh = Github(auth=auth)
     repo = gh.get_repo(os.environ["REPO"])
     base = os.environ.get("BASE_BRANCH", "main")
     branch_name = f"bot/fix-build-{os.environ.get('GITHUB_RUN_ID', 'local')}"

@@ -6,7 +6,7 @@ pipeline {
     GH_TOKEN           = credentials('github-token')
     REPO               = 'calikidd84/devops__week3_lab'
     BASE_BRANCH        = 'main'
-    MODEL              = 'google/gemini-2.0-flash-exp:free'
+    MODEL              = 'openrouter/free'
   }
 
   stages {
@@ -16,9 +16,29 @@ pipeline {
       }
     }
 
+    stage('Debug env check') {
+      steps {
+        sh '''
+          python - <<'EOF'
+import os
+
+print("=== Debug environment check ===")
+print("OPENROUTER_API_KEY present:", bool(os.environ.get("OPENROUTER_API_KEY")))
+print("GH_TOKEN present:", bool(os.environ.get("GH_TOKEN")))
+print("REPO:", os.environ.get("REPO"))
+print("BASE_BRANCH:", os.environ.get("BASE_BRANCH"))
+print("MODEL:", os.environ.get("MODEL"))
+print("OPENROUTER_API_KEY length:", len(os.environ.get("OPENROUTER_API_KEY", "")))
+print("GH_TOKEN length:", len(os.environ.get("GH_TOKEN", "")))
+EOF
+        '''
+      }
+    }
+
     stage('Install dependencies') {
       steps {
-        sh 'pip install pytest openai PyGithub'
+        sh 'python -m pip install --upgrade pip'
+        sh 'python -m pip install pytest openai PyGithub'
       }
     }
 
@@ -32,6 +52,7 @@ pipeline {
 
           sh 'cat build_log.txt'
           env.TESTS_FAILED = (rc != 0) ? 'true' : 'false'
+          echo "TESTS_FAILED=${env.TESTS_FAILED}"
         }
       }
     }
